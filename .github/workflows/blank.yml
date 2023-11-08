@@ -1,0 +1,57 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Build at 00:00 on every 12th day-of-month.
+  schedule:
+    - cron: "0 0 */12 * *"
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ main ]
+    paths-ignore: [ '**/README.md' ]
+  pull_request:
+    branches: [ main ]
+    paths-ignore: [ '**/README.md' ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build-stable"
+  build-stable:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Prerequisites
+        run: |
+          sudo apt update && sudo apt install libfuse2 squashfs-tools -y
+          wget -q "https://github.com/AppImage/AppImageKit/releases/download/continuous/runtime-x86_64" -O runtime ; chmod a+x runtime
+          wget -q "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage" -O appimagetool ; chmod a+x appimagetool
+          wget -c "https://artifacts.videolan.org/vlc-3.0/nightly-snap/"
+          sed -ne 's/^.*href="\([^"]*\).*$/\1/p' index.html | awk '{print $1}' | sed -n '3p' | xargs -i -t -exec wget -r --no-parent -np -l 1 -A "*.snap" -erobots=off -P ~/Downloads "https://artifacts.videolan.org/vlc-3.0/nightly-snap/{}"
+          find ${GITHUB_WORKSPACE} -name '*.snap' | xargs -i -t -exec mv {} ${GITHUB_WORKSPACE}
+          unsquashfs *.snap
+          cp AppRun runtime libunionpreload.so squashfs-root/
+      # Runs a set of commands using the runners shell
+      - name: Build appimage
+        run: |
+         
+          ARCH=x86_64 ./appimagetool --runtime-file squashfs-root/runtime -n squashfs-root/
+
+      - name: release
+        uses: "marvinpinto/action-automatic-releases@6273874b61ebc8c71f1a61b2d98e234cf389b303"
+        with:
+          title: Continuous build
+          automatic_release_tag: continuous-stable
+          prerelease: false
+          draft: false
+          files: /home/runner/work/wine_appimage/wine_appimage/*.AppImage*
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
