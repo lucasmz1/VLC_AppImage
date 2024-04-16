@@ -41,6 +41,7 @@ jobs:
           find ${GITHUB_WORKSPACE} -name '*.snap' | xargs -i -t -exec mv {} ${GITHUB_WORKSPACE}
           unsquashfs *.snap
           chmod a+x AppRun
+          cp -r /usr/share/fonts/ squashfs-root/usr/share/
           cp AppRun vlc.png vlc.desktop runtime libunionpreload.so squashfs-root/
       # Runs a set of commands using the runners shell
       - name: Build appimage
