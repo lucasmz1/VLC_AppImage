@@ -32,6 +32,7 @@ jobs:
 
       - name: Prerequisites
         run: |
+          echo $PATH
           sudo apt update && sudo apt install libfuse2 squashfs-tools curl -y
           wget -q "https://github.com/AppImage/AppImageKit/releases/download/continuous/runtime-x86_64" -O runtime ; chmod a+x runtime
           wget -q "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage" -O appimagetool ; chmod a+x appimagetool
