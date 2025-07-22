@@ -33,15 +33,14 @@ jobs:
       - name: Prerequisites
         run: |
           sudo apt update && sudo apt install libfuse2 squashfs-tools curl -y
-          wget -q "https://github.com/AppImage/AppImageKit/releases/download/continuous/runtime-x86_64" -O runtime ; chmod a+x runtime
-          wget -q "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage" -O appimagetool ; chmod a+x appimagetool
+          wget -q "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage" -O appimagetool ; chmod a+x appimagetool
           wget -c "https://artifacts.videolan.org/vlc-3.0/nightly-snap/"
           sed -ne 's/^.*href="\([^"]*\).*$/\1/p' index.html | awk '{print $1}' | sed -n '3p' | xargs -i -t -exec wget -r --no-parent -np -l 1 -A "*.snap" -erobots=off -P ${GITHUB_WORKSPACE} "https://artifacts.videolan.org/vlc-3.0/nightly-snap/{}"
           find ${GITHUB_WORKSPACE} -name '*.snap' | xargs -i -t -exec mv {} ${GITHUB_WORKSPACE}
           unsquashfs *.snap
           chmod a+x AppRun
           cp -r /usr/share/fonts/ squashfs-root/usr/share/
-          cp AppRun vlc.png vlc.desktop runtime libunionpreload.so squashfs-root/
+          cp AppRun vlc.png vlc.desktop libunionpreload.so squashfs-root/
       # Runs a set of commands using the runners shell
       - name: Build appimage
         run: |
