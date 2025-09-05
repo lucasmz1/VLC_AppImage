@@ -1,5 +1,5 @@
 #!/bin/bash
-APPDIR="$(pwd)"
+APPDIR="$(dirname "$(readlink -f "${0}")")"
 export UNION_PRELOAD="${APPDIR}"
 export LD_PRELOAD="${APPDIR}/libunionpreload.so"
 export FONTCONFIG_PATH="${APPDIR}"/etc/fonts:"${APPDIR}"/etc/fonts/conf.d:"${APPDIR}"/etc/fonts/conf.avail:"${FONTCONFIG_PATH}"
