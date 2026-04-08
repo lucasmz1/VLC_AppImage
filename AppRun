@@ -15,4 +15,4 @@ VLC="${APPDIR}/usr/bin/vlc"
 case $1 in
 exec "$VLC" "$@"
 ;;
-done
+esac
