@@ -13,6 +13,7 @@ export QT_PLUGIN_PATH="${APPDIR}"/usr:"${APPDIR}"/usr/share:"${APPDIR}"/usr/shar
 export QT_QPA_PLATFORM=xcb
 VLC="${APPDIR}/usr/bin/vlc"
 case $1 in
+*)
 exec "$VLC" "$@"
 ;;
 esac
