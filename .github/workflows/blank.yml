@@ -35,7 +35,7 @@ jobs:
           sudo apt update && sudo apt install libfuse2 squashfs-tools curl -y
           wget -q "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage" -O appimagetool ; chmod a+x appimagetool
           wget -c "https://artifacts.videolan.org/vlc/nightly-snap/"
-          sed -ne 's/^.*href="\([^"]*\).*$/\1/p' index.html | awk '{print $1}' | sed -n '3p' | xargs -i -t -exec wget -r --no-parent -np -l 1 -A "*.snap" -erobots=off -P ${GITHUB_WORKSPACE} "https://artifacts.videolan.org/vlc-3.0/nightly-snap/{}"
+          sed -ne 's/^.*href="\([^"]*\).*$/\1/p' index.html | awk '{print $1}' | sed -n '3p' | xargs -i -t -exec wget -r --no-parent -np -l 1 -A "*.snap" -erobots=off -P ${GITHUB_WORKSPACE} "https://artifacts.videolan.org/vlc/nightly-snap/{}"
           find ${GITHUB_WORKSPACE} -name '*.snap' | xargs -i -t -exec mv {} ${GITHUB_WORKSPACE}
           unsquashfs *.snap
           chmod a+x AppRun
